@@ -14,13 +14,14 @@ import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.ModContainer;
+import net.minecraftforge.fml.ExtensionPoint;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.wechandoit.islesforgemod.config.IslesAddonConfig;
+import net.wechandoit.islesforgemod.config.IslesAddonOptionsScreen;
 import net.wechandoit.islesforgemod.util.DiscordUtils;
 import net.wechandoit.islesforgemod.util.MiscUtils;
 import org.apache.logging.log4j.LogManager;
@@ -62,6 +63,8 @@ public class Islesforgemod {
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
         // Register the doClientStuff method for modloading
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::doClientStuff);
+
+        ModLoadingContext.get().registerExtensionPoint(ExtensionPoint.CONFIGGUIFACTORY, () -> (client, parent) -> new IslesAddonOptionsScreen(parent));
 
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             closeIPC();

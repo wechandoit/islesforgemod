@@ -18,7 +18,7 @@ public class IslesAddonOptionsScreen extends SettingsScreen {
     private OptionsRowList buttons;
 
     public IslesAddonOptionsScreen(Screen parent) {
-        super(parent, (Minecraft.getInstance()).gameSettings, new TranslationTextComponent("isles-addons.options"));
+        super(parent, Minecraft.getInstance().gameSettings, new TranslationTextComponent("isles-addons.options"));
     }
 
     @Override
