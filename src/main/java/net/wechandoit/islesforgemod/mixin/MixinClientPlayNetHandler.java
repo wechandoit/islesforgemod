@@ -26,7 +26,7 @@ public class MixinClientPlayNetHandler {
 
     @Inject(method = "handleChat", at = @At("HEAD"), cancellable = true)
     private void handleChat(SChatPacket packetIn, CallbackInfo ci) {
-        if (IslesAddonConfig.CONFIG.get("enable-custom-message", Boolean.class)) {
+        if (IslesAddonConfig.CONFIG.get("custom-message", Boolean.class)) {
             ITextComponent message = packetIn.getChatComponent();
             if (MiscUtils.onIsles()) {
                 if (message.getString().contains("[ITEM]") && !message.getString().contains("Cornucopia")) {

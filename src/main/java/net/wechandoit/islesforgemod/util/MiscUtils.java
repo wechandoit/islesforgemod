@@ -172,12 +172,12 @@ public class MiscUtils {
             CompoundNBT nbtDisplay = nbt.getCompound("display");
             if(nbtDisplay != null && nbtDisplay.get("Lore") != null) {
                 String rawLore = nbtDisplay.get("Lore").toString();
-                if (enableCrateIcon) {
+                if (IslesAddonConfig.CONFIG.get("crate-icon-amount", Boolean.class)) {
                     if (isCrate(stack)) {
                         int amount = getAmountInCrate(rawLore);
                         renderAmountText(new MatrixStack(), stack, x, y, z, amount);
                     }
-                } else if (enableRingIcon) {
+                } else if (IslesAddonConfig.CONFIG.get("ring-icon-amount", Boolean.class)) {
                     if (isRing(stack)) {
                         int amount = 0;
                         renderAmountText(new MatrixStack(), stack, x, y, z, amount);
