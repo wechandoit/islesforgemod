@@ -2,6 +2,7 @@ package net.wechandoit.islesforgemod.util;
 
 import com.jagrosh.discordipc.entities.RichPresence;
 import com.jagrosh.discordipc.entities.RichPresenceButton;
+import com.jagrosh.discordipc.entities.pipe.PipeStatus;
 import net.wechandoit.islesforgemod.Islesforgemod;
 
 public class DiscordUtils {
@@ -10,6 +11,11 @@ public class DiscordUtils {
 
     public static void updateRPC(String firstline, String secondline)
     {
+        if(Islesforgemod.ipcClient.getStatus() != PipeStatus.CONNECTED)
+        {
+            return;
+        }
+
         RichPresence.Builder builder = new RichPresence.Builder();
         RichPresenceButton[] button = new RichPresenceButton[0];
         builder.setDetails(firstline)
