@@ -162,9 +162,6 @@ public class MiscUtils {
 
     }
 
-    private static boolean enableCrateIcon = true;
-    private static boolean enableRingIcon = true;
-
     public static void renderAmountOnCrates(ItemStack stack, int x, int y, int z) {
         CompoundNBT nbt = stack.getTag();
         if (nbt != null && nbt.getCompound("display") != null) {
