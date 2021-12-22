@@ -56,8 +56,7 @@ public class Islesforgemod {
     public Islesforgemod() {
 
 //        firstLoad = IslesAddonConfig.doesNotExist();
-//        IslesAddonConfig.load();
-        ModContainer mod = ModLoadingContext.get().getActiveContainer();
+        IslesAddonConfig.load();
 
         // Register the setup method for modloading
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
