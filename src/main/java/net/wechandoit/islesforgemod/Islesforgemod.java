@@ -155,11 +155,9 @@ public class Islesforgemod {
 
                 }
             }
-            if (clientTick > 20) clientTick = 1;
-            else if (clientTick == 20) {
+            if (clientTick == 20) {
                 discordAppCount++;
-                if (discordAppCount > 5) discordAppCount = 0;
-                else if (discordAppCount == 5) {
+                if (discordAppCount == 5) {
                     if (MiscUtils.onIsles()) {
                         List<String> scoreboard = MiscUtils.getScoreboard();
                         if (scoreboard != null && scoreboard.size() > 1) {
@@ -171,10 +169,12 @@ public class Islesforgemod {
                             }
                         }
                     } else {
-                        if (!Minecraft.getInstance().isSingleplayer())
+                        if (!client.isSingleplayer())
                             DiscordUtils.updateRPC("In Game Menu", "");
                     }
+                    discordAppCount = 0;
                 }
+                clientTick = 0;
             }
         }
     }
