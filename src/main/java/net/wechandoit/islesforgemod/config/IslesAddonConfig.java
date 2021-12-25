@@ -2,7 +2,6 @@ package net.wechandoit.islesforgemod.config;
 
 import com.google.common.base.Preconditions;
 import net.minecraft.client.AbstractOption;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.settings.BooleanOption;
 import net.minecraft.client.settings.IteratableOption;
@@ -61,7 +60,7 @@ public class IslesAddonConfig {
     }
 
     private static AbstractOption toOption(Map.Entry<String, Object> entry) {
-        AbstractOption option = null;
+        AbstractOption option;
         String key = entry.getKey();
         if (key.endsWith(".min") || key.endsWith(".max") || key.endsWith(".step"))
             return null;
@@ -87,7 +86,7 @@ public class IslesAddonConfig {
         }
         String tooltipKey = translationKey + ".tooltip";
         if (I18n.hasKey(tooltipKey))
-            option.setOptionValues(Minecraft.getInstance().fontRenderer.trimStringToWidth(new TranslationTextComponent(tooltipKey), 200));
+            option.setOptionValues(Islesforgemod.client.fontRenderer.trimStringToWidth(new TranslationTextComponent(tooltipKey), 200));
         return option;
     }
 }

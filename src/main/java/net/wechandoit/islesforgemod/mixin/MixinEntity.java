@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public abstract class MixinEntity {
 
     @Shadow
-    private boolean glowing;
+    protected boolean glowing;
 
     @Shadow
     protected abstract void setFlag(int index, boolean value);

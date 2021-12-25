@@ -28,7 +28,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.time.OffsetDateTime;
-import java.util.Iterator;
 import java.util.List;
 
 @Mod("islesforgemod")
@@ -36,8 +35,8 @@ public class Islesforgemod {
 
     private static final Logger LOGGER = LogManager.getLogger();
     private static final String MOD_ID = "islesforgeaddons";
-    public static Minecraft client = Minecraft.getInstance();
-    public static IPCClient ipcClient = new IPCClient(904055870483222528L);
+    public static final Minecraft client = Minecraft.getInstance();
+    public static final IPCClient ipcClient = new IPCClient(904055870483222528L);
 
     private static boolean firstLoad;
 
@@ -65,9 +64,7 @@ public class Islesforgemod {
 
         ModLoadingContext.get().registerExtensionPoint(ExtensionPoint.CONFIGGUIFACTORY, () -> (client, parent) -> new IslesAddonOptionsScreen(parent));
 
-        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            closeIPC();
-        }));
+        Runtime.getRuntime().addShutdownHook(new Thread(this::closeIPC));
 
     }
 
@@ -142,9 +139,7 @@ public class Islesforgemod {
                     List<Entity> nearbyArmorStands = client.world.getEntitiesInAABBexcluding(client.player, client.player.getBoundingBox().expand(client.gameRenderer.getFarPlaneDistance(), client.gameRenderer.getFarPlaneDistance(), client.gameRenderer.getFarPlaneDistance()), (entity -> entity.getType() == EntityType.ARMOR_STAND));
                     for (Entity en : nearbyArmorStands) {
                         if (!en.isGlowing()) {
-                            Iterator<ItemStack> armorItems = en.getArmorInventoryList().iterator();
-                            while (armorItems.hasNext()) {
-                                ItemStack stack = armorItems.next();
+                            for(ItemStack stack : en.getArmorInventoryList()) {
                                 if (stack != null && !stack.toString().toUpperCase().contains("AIR") && stack.getTag() != null && stack.getTag().get("SkullOwner") != null && stack.getTag().get("SkullOwner").toString().contains(skullSignature)) {
                                     en.setGlowing(true);
                                 }

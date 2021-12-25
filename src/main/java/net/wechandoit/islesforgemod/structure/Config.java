@@ -68,7 +68,7 @@ public class Config extends AbstractMap<String, Object> {
         try {
             ByteArrayOutputStream out = new ByteArrayOutputStream(4096);
             save(out);
-            Files.write(path, out.toByteArray(), new java.nio.file.OpenOption[0]);
+            Files.write(path, out.toByteArray());
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }

@@ -1,7 +1,6 @@
 package net.wechandoit.islesforgemod.config;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.DialogTexts;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.SettingsScreen;
@@ -9,6 +8,7 @@ import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.gui.widget.list.OptionsRowList;
 import net.minecraft.util.IReorderingProcessor;
 import net.minecraft.util.text.TranslationTextComponent;
+import net.wechandoit.islesforgemod.Islesforgemod;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
@@ -19,7 +19,7 @@ public class IslesAddonOptionsScreen extends SettingsScreen {
     private OptionsRowList buttons;
 
     public IslesAddonOptionsScreen(Screen parent) {
-        super(parent, Minecraft.getInstance().gameSettings, new TranslationTextComponent("isles-addons.options"));
+        super(parent, Islesforgemod.client.gameSettings, new TranslationTextComponent("isles-addons.options"));
     }
 
     @Override
