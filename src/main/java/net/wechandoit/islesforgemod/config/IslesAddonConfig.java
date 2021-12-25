@@ -76,7 +76,7 @@ public class IslesAddonConfig {
         } else if (value instanceof Boolean) {
             option = new BooleanOption(translationKey, __ -> CONFIG.get(key, Boolean.class), (__, v) -> CONFIG.put(key, v));
         } else if (value instanceof Collection) {
-            List<String> options = ((Collection<Object>)value).stream().map(String::valueOf).collect(Collectors.toList());
+            List<String> options = ((Collection<?>)value).stream().map(String::valueOf).collect(Collectors.toList());
             Preconditions.checkState(!options.isEmpty(), "no options: " + key);
             option = new IteratableOption(translationKey, (__, a) -> {
                 for (int i = 0; i < a; i++)

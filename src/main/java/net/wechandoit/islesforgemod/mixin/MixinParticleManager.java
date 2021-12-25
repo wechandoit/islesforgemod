@@ -28,8 +28,8 @@ public abstract class MixinParticleManager {
     @Inject(method = "addParticle(Lnet/minecraft/particles/IParticleData;DDDDDD)Lnet/minecraft/client/particle/Particle;", at = @At("HEAD"), cancellable = true)
     private void addParticle(IParticleData particleData, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed, CallbackInfoReturnable<Boolean> callback) {
 
-        List<EntityType> qtetypes = Arrays.asList(EntityType.MAGMA_CUBE, EntityType.ITEM);
-        List<ParticleType> legendaryQTEParticleTypes = Arrays.asList(ParticleTypes.DRIPPING_HONEY, ParticleTypes.FALLING_HONEY, ParticleTypes.LANDING_HONEY);
+        List<EntityType<?>> qtetypes = Arrays.asList(EntityType.MAGMA_CUBE, EntityType.ITEM);
+        List<ParticleType<?>> legendaryQTEParticleTypes = Arrays.asList(ParticleTypes.DRIPPING_HONEY, ParticleTypes.FALLING_HONEY, ParticleTypes.LANDING_HONEY);
 
         if ((particleData.getType() == ParticleTypes.HAPPY_VILLAGER && IslesAddonConfig.CONFIG.get("green-qte-notifier", Boolean.class))
                 || (particleData.getType() == ParticleTypes.DRAGON_BREATH && IslesAddonConfig.CONFIG.get("purple-qte-notifier", Boolean.class))
@@ -37,7 +37,7 @@ public abstract class MixinParticleManager {
             AxisAlignedBB particleBox = new AxisAlignedBB(x - 0.5, y - 0.5, z - 0.5, x + 0.5, y + 0.5, z + 0.5);
             // get closest entity of type ItemEntity to particleLoc
             List<Entity> nearbyClickBoxes = client.world.getEntitiesInAABBexcluding(client.player, particleBox, (entity -> qtetypes.contains(entity.getType())));
-            List<EntityType> nearbyEntityTypes = new ArrayList<>();
+            List<EntityType<?>> nearbyEntityTypes = new ArrayList<>();
             nearbyClickBoxes.forEach(entity -> {
                 if (!nearbyEntityTypes.contains(entity.getType()))
                     nearbyEntityTypes.add(entity.getType());

@@ -20,7 +20,7 @@ public class Config extends AbstractMap<String, Object> {
     private final Map<String, Object> internal;
 
     public Config() {
-        this.internal = (Map<String, Object>) new LinkedTreeMap();
+        this.internal = new LinkedTreeMap<>();
     }
 
     public Config(InputStream in) {

@@ -10,6 +10,7 @@ import net.minecraft.client.gui.widget.list.OptionsRowList;
 import net.minecraft.util.IReorderingProcessor;
 import net.minecraft.util.text.TranslationTextComponent;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
 import java.util.Objects;
 
@@ -33,6 +34,7 @@ public class IslesAddonOptionsScreen extends SettingsScreen {
     }
 
     @Override
+    @ParametersAreNonnullByDefault
     public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
         renderBackground(matrices);
         this.buttons.render(matrices, mouseX, mouseY, delta);
