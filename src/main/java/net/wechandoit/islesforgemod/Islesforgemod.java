@@ -1,6 +1,7 @@
 package net.wechandoit.islesforgemod;
 
 import com.jagrosh.discordipc.IPCClient;
+import com.jagrosh.discordipc.entities.pipe.PipeStatus;
 import com.jagrosh.discordipc.exceptions.NoDiscordClientException;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
@@ -182,7 +183,7 @@ public class Islesforgemod {
     }
 
     public void closeIPC() {
-        if (MiscUtils.onIsles()) {
+        if (MiscUtils.onIsles() && ipcClient.getStatus() == PipeStatus.CONNECTED) {
             previousIP = "";
             ipcClient.close();
         }
