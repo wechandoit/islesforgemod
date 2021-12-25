@@ -102,12 +102,9 @@ public class Islesforgemod {
         return getFishingHoloEntity(fishingEntity) != null && fishingHoloEntity.getEntityId() != getFishingHoloEntity(fishingEntity).getEntityId();
     }
 
-    public static boolean enableGlowingGiantSkulls = true;
-    public static boolean enableFishingNotif = true;
-
     @SubscribeEvent(priority = EventPriority.HIGH)
     public void onEntityInteract(PlayerInteractEvent.EntityInteract event) {
-        if (enableFishingNotif) {
+        if (IslesAddonConfig.CONFIG.get("fishing-notifier", Boolean.class)) {
             Entity entity = event.getTarget();
             if (!isFishing && entity.getType() == EntityType.MAGMA_CUBE && !justStartedFishing && client.player.inventory.getFirstEmptyStack() > -1 && ((MagmaCubeEntity) entity).getSlimeSize() > 1 && Islesforgemod.getFishingHoloEntity(entity) != null) {
                 isFishing = true;
@@ -122,7 +119,7 @@ public class Islesforgemod {
     public void onClientTick(TickEvent.ClientTickEvent event) {
         if (event.phase == TickEvent.Phase.START) {
             clientTick++;
-            if (enableFishingNotif) {
+            if (IslesAddonConfig.CONFIG.get("fishing-notifier", Boolean.class)) {
                 if (isFishing && (!isFishingEntityAlive() || isFishingArmorstandNearby() || client.player.isSneaking() || client.player.inventory.getFirstEmptyStack() == -1) && !justStartedFishing) {
                     isFishing = false;
                     fishingEntity = null;
@@ -133,7 +130,7 @@ public class Islesforgemod {
                     justStartedFishing = false;
                 }
             }
-            if (enableGlowingGiantSkulls) {
+            if (IslesAddonConfig.CONFIG.get("glowing-parkour-skulls", Boolean.class)) {
                 // get closest armorstand to particleLoc
                 try {
                     List<Entity> nearbyArmorStands = client.world.getEntitiesInAABBexcluding(client.player, client.player.getBoundingBox().expand(client.gameRenderer.getFarPlaneDistance(), client.gameRenderer.getFarPlaneDistance(), client.gameRenderer.getFarPlaneDistance()), (entity -> entity.getType() == EntityType.ARMOR_STAND));
