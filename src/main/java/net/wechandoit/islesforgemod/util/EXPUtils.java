@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 
 public class EXPUtils {
-    public static HashMap<String, Integer> fishXPMap = new LinkedHashMap<String, Integer>() {{
+    public static final HashMap<String, Integer> fishXPMap = new LinkedHashMap<String, Integer>() {{
         put("Raw Sardine", 12);
         put("Raw Flounder", 18);
         put("Raw Stone Clam", 22);
@@ -39,7 +39,7 @@ public class EXPUtils {
         // put("Raw Shark", );
     }};
 
-    public static HashMap<String, Integer> cookingXPMap = new LinkedHashMap<String, Integer>() {{
+    public static final HashMap<String, Integer> cookingXPMap = new LinkedHashMap<String, Integer>() {{
         put("Grilled Sardine", 12);
         put("Stone Chum", 16);
         put("Grilled Flounder", 18);
@@ -127,7 +127,7 @@ public class EXPUtils {
         put("Pepperoni", 185);
     }};
 
-    public static HashMap<String, Integer> foragingXPMap = new LinkedHashMap<String, Integer>() {{
+    public static final HashMap<String, Integer> foragingXPMap = new LinkedHashMap<String, Integer>() {{
         put("Oak Log", 30);
         put("Birch Log", 40);
         put("Spruce Log", 50);
@@ -153,7 +153,7 @@ public class EXPUtils {
         put("Dark Rune", 0); // dreadknot trees drop dark runes too
     }};
 
-    public static HashMap<String, Integer> carvingXPMap = new LinkedHashMap<String, Integer>() {{
+    public static final HashMap<String, Integer> carvingXPMap = new LinkedHashMap<String, Integer>() {{
         put("Oak Handle", 35);
         put("Birch Handle", 50);
         put("Spruce Handle", 65);
@@ -165,7 +165,7 @@ public class EXPUtils {
         put("Demon Handle", 625);
     }};
 
-    public static HashMap<String, Integer> farmingXPMap = new LinkedHashMap<String, Integer>() {{
+    public static final HashMap<String, Integer> farmingXPMap = new LinkedHashMap<String, Integer>() {{
         put("Apple", 8);
         put("Wheat", 12);
         put("Orange", 16);
@@ -197,7 +197,7 @@ public class EXPUtils {
         put("Mandrake", 225);
     }};
 
-    public static HashMap<String, Integer> miningXPMap = new LinkedHashMap<String, Integer>() {{
+    public static final HashMap<String, Integer> miningXPMap = new LinkedHashMap<String, Integer>() {{
         put("Tin Ore", 12);
         put("Copper Ore", 12);
         put("Clay", 18);
@@ -233,7 +233,7 @@ public class EXPUtils {
         put("Rough Celestial", 0);
     }};
 
-    public static HashMap<String, Integer> smeltingXPMap = new LinkedHashMap<String, Integer>() {{
+    public static final HashMap<String, Integer> smeltingXPMap = new LinkedHashMap<String, Integer>() {{
         put("Bronze Bar", 20);
         put("Iron Bar", 30);
         put("Molten Glass", 20);
@@ -250,7 +250,7 @@ public class EXPUtils {
         // put("Blightstone Bar", );
     }};
 
-    public static HashMap<String, Integer> artisanXPMap = new LinkedHashMap<String, Integer>() {{
+    public static final HashMap<String, Integer> artisanXPMap = new LinkedHashMap<String, Integer>() {{
 
         put("Fishing Line", 50);
         put("Enchanted Fishing Line", 75);

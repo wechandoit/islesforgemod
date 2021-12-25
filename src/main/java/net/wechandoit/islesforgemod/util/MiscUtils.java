@@ -2,7 +2,6 @@ package net.wechandoit.islesforgemod.util;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.item.ItemStack;
@@ -21,9 +20,9 @@ import java.util.*;
 
 public class MiscUtils {
 
-    private static String cratesSignature = "htUMuy0MbM1YSwEL/xTBC3nSZHY9GtPwiwicjZLjV9aifGMj3t0PUwmhVqwbMXDdp0Yzi4Roepa97cK8lELyjVg/iT2zKzlvISqQYtEcNEan+XBTfFM/H1MUZTV/+N4Hcxf0FEuNT9wJm3Sa+3pZbg2VFTPAqBbQDsTvnFDHHDGz4mR4R5D7w0gbI8i28pIPDp5eGB93RDX8FYEDoEwIiBfqgmT2KASec6pq//xonIw96LTXM7Hg+EZauHhZbvXN+eessLqprYqLRlVEIdzj/tobw+VcuklcjdlQOp8OOp08QmTa2Hz7sseg9NavBAWFz0O0bRnaPZ7EAZ1yFQzXiQgXKK8/sf6IJWoH8hsBdDzg6IDFMrWhHX1qFHAySxSYXC2cFyyNLjy5KGz6DsCaoTpPmwgSOVZqzDePXBiePhQPRN4M3XD6qT8fRJoImWaIvEDgy8MiYWwhC2OidRbXwsj/L6RO6CVilN7N9TdhERqsx0QqMNP/tT52CLpS13KB81A7Zmh+YZ0fgh37CgiU3IbVLbsgICh3J8D8RDgqyvhmngt01wW+yg0W2RF7uxeXUE8LMjvWpYKi0r53uQj9s9K9MRGFv+3oEMwlU2Rl/WT/8+yVfwUihWJ8QNNki8KprXBy4eUz1oG5UM1pFA6KpBTVgds0ZyBIGUI7uvfoNG4=";
+    private static final String cratesSignature = "htUMuy0MbM1YSwEL/xTBC3nSZHY9GtPwiwicjZLjV9aifGMj3t0PUwmhVqwbMXDdp0Yzi4Roepa97cK8lELyjVg/iT2zKzlvISqQYtEcNEan+XBTfFM/H1MUZTV/+N4Hcxf0FEuNT9wJm3Sa+3pZbg2VFTPAqBbQDsTvnFDHHDGz4mR4R5D7w0gbI8i28pIPDp5eGB93RDX8FYEDoEwIiBfqgmT2KASec6pq//xonIw96LTXM7Hg+EZauHhZbvXN+eessLqprYqLRlVEIdzj/tobw+VcuklcjdlQOp8OOp08QmTa2Hz7sseg9NavBAWFz0O0bRnaPZ7EAZ1yFQzXiQgXKK8/sf6IJWoH8hsBdDzg6IDFMrWhHX1qFHAySxSYXC2cFyyNLjy5KGz6DsCaoTpPmwgSOVZqzDePXBiePhQPRN4M3XD6qT8fRJoImWaIvEDgy8MiYWwhC2OidRbXwsj/L6RO6CVilN7N9TdhERqsx0QqMNP/tT52CLpS13KB81A7Zmh+YZ0fgh37CgiU3IbVLbsgICh3J8D8RDgqyvhmngt01wW+yg0W2RF7uxeXUE8LMjvWpYKi0r53uQj9s9K9MRGFv+3oEMwlU2Rl/WT/8+yVfwUihWJ8QNNki8KprXBy4eUz1oG5UM1pFA6KpBTVgds0ZyBIGUI7uvfoNG4=";
     private static final int GUI_OVERLAY_WIDTH_THRESH = 16;
-    private static FontRenderer fontRenderer = Islesforgemod.client.fontRenderer;
+    private static final FontRenderer fontRenderer = Islesforgemod.client.fontRenderer;
 
     public static boolean isWordFromListInString(String message, Collection<String> checkList) {
         return getWordFromListInString(message, checkList) != null;
@@ -81,7 +80,7 @@ public class MiscUtils {
 
     public static List<String> getScoreboard() {
         try {
-            Scoreboard board = Minecraft.getInstance().player.getWorldScoreboard();
+            Scoreboard board = Islesforgemod.client.player.getWorldScoreboard();
             ScoreObjective objective = board.getObjectiveInDisplaySlot(1);
             List<String> lines = new ArrayList<>();
             for (Score score : board.getSortedScores(objective)) {
@@ -140,8 +139,8 @@ public class MiscUtils {
         float scaleRatio = 16 / 20f;
         if (amount < 100) scaleRatio = 1;
         float messageWidth =
-                Minecraft.getInstance().fontRenderer.getStringWidth(message.getString()) / scaleRatio;
-        float fontHeight = Minecraft.getInstance().fontRenderer.FONT_HEIGHT / scaleRatio;
+                Islesforgemod.client.fontRenderer.getStringWidth(message.getString()) / scaleRatio;
+        float fontHeight = Islesforgemod.client.fontRenderer.FONT_HEIGHT / scaleRatio;
         matrices.push();
         if (messageWidth * scaleRatio > 20)
             scaleRatio = GUI_OVERLAY_WIDTH_THRESH / messageWidth;

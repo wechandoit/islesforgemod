@@ -1,6 +1,7 @@
 package net.wechandoit.islesforgemod;
 
 import com.jagrosh.discordipc.IPCClient;
+import com.jagrosh.discordipc.entities.pipe.PipeStatus;
 import com.jagrosh.discordipc.exceptions.NoDiscordClientException;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
@@ -28,7 +29,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.time.OffsetDateTime;
-import java.util.Iterator;
 import java.util.List;
 
 @Mod("islesforgemod")
@@ -36,8 +36,8 @@ public class Islesforgemod {
 
     private static final Logger LOGGER = LogManager.getLogger();
     private static final String MOD_ID = "islesforgeaddons";
-    public static Minecraft client = Minecraft.getInstance();
-    public static IPCClient ipcClient = new IPCClient(904055870483222528L);
+    public static final Minecraft client = Minecraft.getInstance();
+    public static final IPCClient ipcClient = new IPCClient(904055870483222528L);
 
     private static boolean firstLoad;
 
@@ -65,9 +65,7 @@ public class Islesforgemod {
 
         ModLoadingContext.get().registerExtensionPoint(ExtensionPoint.CONFIGGUIFACTORY, () -> (client, parent) -> new IslesAddonOptionsScreen(parent));
 
-        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            closeIPC();
-        }));
+        Runtime.getRuntime().addShutdownHook(new Thread(this::closeIPC));
 
     }
 
@@ -105,12 +103,9 @@ public class Islesforgemod {
         return getFishingHoloEntity(fishingEntity) != null && fishingHoloEntity.getEntityId() != getFishingHoloEntity(fishingEntity).getEntityId();
     }
 
-    public static boolean enableGlowingGiantSkulls = true;
-    public static boolean enableFishingNotif = true;
-
     @SubscribeEvent(priority = EventPriority.HIGH)
     public void onEntityInteract(PlayerInteractEvent.EntityInteract event) {
-        if (enableFishingNotif) {
+        if (IslesAddonConfig.CONFIG.get("fishing-notifier", Boolean.class)) {
             Entity entity = event.getTarget();
             if (!isFishing && entity.getType() == EntityType.MAGMA_CUBE && !justStartedFishing && client.player.inventory.getFirstEmptyStack() > -1 && ((MagmaCubeEntity) entity).getSlimeSize() > 1 && Islesforgemod.getFishingHoloEntity(entity) != null) {
                 isFishing = true;
@@ -125,7 +120,7 @@ public class Islesforgemod {
     public void onClientTick(TickEvent.ClientTickEvent event) {
         if (event.phase == TickEvent.Phase.START) {
             clientTick++;
-            if (enableFishingNotif) {
+            if (IslesAddonConfig.CONFIG.get("fishing-notifier", Boolean.class)) {
                 if (isFishing && (!isFishingEntityAlive() || isFishingArmorstandNearby() || client.player.isSneaking() || client.player.inventory.getFirstEmptyStack() == -1) && !justStartedFishing) {
                     isFishing = false;
                     fishingEntity = null;
@@ -136,15 +131,13 @@ public class Islesforgemod {
                     justStartedFishing = false;
                 }
             }
-            if (enableGlowingGiantSkulls) {
+            if (IslesAddonConfig.CONFIG.get("glowing-parkour-skulls", Boolean.class)) {
                 // get closest armorstand to particleLoc
                 try {
                     List<Entity> nearbyArmorStands = client.world.getEntitiesInAABBexcluding(client.player, client.player.getBoundingBox().expand(client.gameRenderer.getFarPlaneDistance(), client.gameRenderer.getFarPlaneDistance(), client.gameRenderer.getFarPlaneDistance()), (entity -> entity.getType() == EntityType.ARMOR_STAND));
                     for (Entity en : nearbyArmorStands) {
                         if (!en.isGlowing()) {
-                            Iterator<ItemStack> armorItems = en.getArmorInventoryList().iterator();
-                            while (armorItems.hasNext()) {
-                                ItemStack stack = armorItems.next();
+                            for(ItemStack stack : en.getArmorInventoryList()) {
                                 if (stack != null && !stack.toString().toUpperCase().contains("AIR") && stack.getTag() != null && stack.getTag().get("SkullOwner") != null && stack.getTag().get("SkullOwner").toString().contains(skullSignature)) {
                                     en.setGlowing(true);
                                 }
@@ -190,7 +183,7 @@ public class Islesforgemod {
     }
 
     public void closeIPC() {
-        if (MiscUtils.onIsles()) {
+        if (MiscUtils.onIsles() && ipcClient.getStatus() == PipeStatus.CONNECTED) {
             previousIP = "";
             ipcClient.close();
         }

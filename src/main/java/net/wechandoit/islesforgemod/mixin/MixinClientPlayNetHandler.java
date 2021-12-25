@@ -110,7 +110,7 @@ public class MixinClientPlayNetHandler {
             client.player.sendStatusMessage(message, false);
         }
 
-        return null;
+        return message;
     }
 
     private char getColorFromAmount(int amount) {

@@ -2,7 +2,6 @@ package net.wechandoit.islesforgemod.config;
 
 import com.google.common.base.Preconditions;
 import net.minecraft.client.AbstractOption;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.settings.BooleanOption;
 import net.minecraft.client.settings.IteratableOption;
@@ -61,7 +60,7 @@ public class IslesAddonConfig {
     }
 
     private static AbstractOption toOption(Map.Entry<String, Object> entry) {
-        AbstractOption option = null;
+        AbstractOption option;
         String key = entry.getKey();
         if (key.endsWith(".min") || key.endsWith(".max") || key.endsWith(".step"))
             return null;
@@ -76,7 +75,7 @@ public class IslesAddonConfig {
         } else if (value instanceof Boolean) {
             option = new BooleanOption(translationKey, __ -> CONFIG.get(key, Boolean.class), (__, v) -> CONFIG.put(key, v));
         } else if (value instanceof Collection) {
-            List<String> options = ((Collection<Object>)value).stream().map(String::valueOf).collect(Collectors.toList());
+            List<String> options = ((Collection<?>)value).stream().map(String::valueOf).collect(Collectors.toList());
             Preconditions.checkState(!options.isEmpty(), "no options: " + key);
             option = new IteratableOption(translationKey, (__, a) -> {
                 for (int i = 0; i < a; i++)
@@ -87,7 +86,7 @@ public class IslesAddonConfig {
         }
         String tooltipKey = translationKey + ".tooltip";
         if (I18n.hasKey(tooltipKey))
-            option.setOptionValues(Minecraft.getInstance().fontRenderer.trimStringToWidth(new TranslationTextComponent(tooltipKey), 200));
+            option.setOptionValues(Islesforgemod.client.fontRenderer.trimStringToWidth(new TranslationTextComponent(tooltipKey), 200));
         return option;
     }
 }
