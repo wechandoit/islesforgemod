@@ -1,7 +1,6 @@
 package net.wechandoit.islesforgemod.mixin;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.network.play.ClientPlayNetHandler;
 import net.minecraft.network.play.server.SChatPacket;
 import net.minecraft.util.text.ITextComponent;
@@ -17,7 +16,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Stack;
-import java.util.stream.Collectors;
 
 @Mixin(ClientPlayNetHandler.class)
 public class MixinClientPlayNetHandler {
@@ -26,61 +24,58 @@ public class MixinClientPlayNetHandler {
 
     @Inject(method = "handleChat", at = @At("HEAD"), cancellable = true)
     private void handleChat(SChatPacket packetIn, CallbackInfo ci) {
-        if (IslesAddonConfig.CONFIG.get("enable-custom-message", Boolean.class)) {
+        if (IslesAddonConfig.CONFIG.get("custom-message", Boolean.class)) {
             ITextComponent message = packetIn.getChatComponent();
             if (MiscUtils.onIsles()) {
                 if (message.getString().contains("[ITEM]") && !message.getString().contains("Cornucopia")) {
-                    //Minecraft.getInstance().player.sendChatMessage("no");
-                    ClientPlayerEntity player = Minecraft.getInstance().player;
                     // check for rare item
-                    if (message.getString().contains("Raw") && MiscUtils.isWordFromListInString(message.getString(), EXPUtils.fishXPMap.keySet().stream().collect(Collectors.toList()))) {
+                    if (message.getString().contains("Raw") && MiscUtils.isWordFromListInString(message.getString(), EXPUtils.fishXPMap.keySet())) {
                         ci.cancel();
-                        sendMessageFromList(message.getString(),
-                                EXPUtils.fishXPMap, player);
-                    } else if (!message.getString().contains("Hide") && MiscUtils.isWordFromListInString(message.getString(), EXPUtils.cookingXPMap.keySet().stream().collect(Collectors.toList()))) {
+                        sendMessageFromList(message, EXPUtils.fishXPMap);
+                    } else if (!message.getString().contains("Hide") && MiscUtils.isWordFromListInString(message.getString(), EXPUtils.cookingXPMap.keySet())) {
                         ci.cancel();
-                        sendMessageFromList(message.getString(), EXPUtils.cookingXPMap, player);
-                    } else if ((message.getString().contains("Log") || message.getString().contains("Bark")) && MiscUtils.isWordFromListInString(message.getString(), EXPUtils.foragingXPMap.keySet().stream().collect(Collectors.toList()))) {
+                        sendMessageFromList(message, EXPUtils.cookingXPMap);
+                    } else if ((message.getString().contains("Log") || message.getString().contains("Bark")) && MiscUtils.isWordFromListInString(message.getString(), EXPUtils.foragingXPMap.keySet())) {
                         ci.cancel();
                         if (message.getString().contains("🪓"))
-                            sendMessageFromList(message.getString(), EXPUtils.foragingXPMap, Minecraft.getInstance().player, true);
+                            sendMessageFromList(message, EXPUtils.foragingXPMap, true);
                         else
-                            sendMessageFromList(message.getString(), EXPUtils.foragingXPMap, Minecraft.getInstance().player);
-                    } else if (message.getString().contains("Handle") && MiscUtils.isWordFromListInString(message.getString(), EXPUtils.foragingXPMap.keySet().stream().collect(Collectors.toList()))) {
+                            sendMessageFromList(message, EXPUtils.foragingXPMap);
+                    } else if (message.getString().contains("Handle") && MiscUtils.isWordFromListInString(message.getString(), EXPUtils.foragingXPMap.keySet())) {
                         ci.cancel();
-                        sendMessageFromList(message.getString(), EXPUtils.carvingXPMap, Minecraft.getInstance().player);
-                    } else if (MiscUtils.isWordFromListInString(message.getString(), EXPUtils.farmingXPMap.keySet().stream().collect(Collectors.toList()))) {
+                        sendMessageFromList(message, EXPUtils.carvingXPMap);
+                    } else if (MiscUtils.isWordFromListInString(message.getString(), EXPUtils.farmingXPMap.keySet())) {
                         ci.cancel();
-                        sendMessageFromList(message.getString(), EXPUtils.farmingXPMap, Minecraft.getInstance().player);
-                    } else if ((message.getString().contains("Ore") || message.getString().contains("Chunk") || message.getString().contains("Coal") || message.getString().contains("Ice") || message.getString().contains("Essence") || message.getString().contains("Slab") || message.getString().contains("Cannonball")) && MiscUtils.isWordFromListInString(message.getString(), EXPUtils.miningXPMap.keySet().stream().collect(Collectors.toList()))) {
+                        sendMessageFromList(message, EXPUtils.farmingXPMap);
+                    } else if ((message.getString().contains("Ore") || message.getString().contains("Chunk") || message.getString().contains("Coal") || message.getString().contains("Ice") || message.getString().contains("Essence") || message.getString().contains("Slab") || message.getString().contains("Cannonball")) && MiscUtils.isWordFromListInString(message.getString(), EXPUtils.miningXPMap.keySet())) {
                         ci.cancel();
-                        sendMessageFromList(message.getString(), EXPUtils.miningXPMap, Minecraft.getInstance().player);
-                    } else if ((message.getString().contains("Molten") || message.getString().contains("Bar")) && MiscUtils.isWordFromListInString(message.getString(), EXPUtils.smeltingXPMap.keySet().stream().collect(Collectors.toList()))) {
+                        sendMessageFromList(message, EXPUtils.miningXPMap);
+                    } else if ((message.getString().contains("Molten") || message.getString().contains("Bar")) && MiscUtils.isWordFromListInString(message.getString(), EXPUtils.smeltingXPMap.keySet())) {
                         ci.cancel();
-                        sendMessageFromList(message.getString(), EXPUtils.smeltingXPMap, Minecraft.getInstance().player);
+                        sendMessageFromList(message, EXPUtils.smeltingXPMap);
                     }
                 }
             }
         }
     }
 
-    private ITextComponent sendMessageFromList(String message, Map<String, Integer> xpmap, ClientPlayerEntity player) {
-        return sendMessageFromList(message, xpmap, player, false);
+    private ITextComponent sendMessageFromList(ITextComponent message, Map<String, Integer> xpmap) {
+        return sendMessageFromList(message, xpmap, false);
     }
 
-    private ITextComponent sendMessageFromList(String message, Map<String, Integer> xpmap, ClientPlayerEntity player, boolean isLumberBuff) {
-        return sendMessageFromList(message, xpmap, player, isLumberBuff, false);
+    private ITextComponent sendMessageFromList(ITextComponent message, Map<String, Integer> xpmap, boolean isLumberBuff) {
+        return sendMessageFromList(message, xpmap, isLumberBuff, false);
     }
 
-    private ITextComponent sendMessageFromList(String message, Map<String, Integer> xpmap, ClientPlayerEntity player, boolean isLumberBuff, boolean isROLProc) {
+    private ITextComponent sendMessageFromList(ITextComponent message, Map<String, Integer> xpmap, boolean isLumberBuff, boolean isROLProc) {
         float multiplier = isLumberBuff ? 1.5F : 1;
-        Stack stack = MiscUtils.getStackFromItemResourceString(message.substring(7));
+        Stack<String> stack = MiscUtils.getStackFromItemResourceString(message.getString().substring(7));
 
         HashMap<String, Integer> itemAmountMap = new HashMap<>();
         int maxAmount = 0;
-        while (stack.stream().count() >= 2) {
-            String type = MiscUtils.getWordFromListInString(String.valueOf(stack.pop()), xpmap.keySet().stream().collect(Collectors.toList()));
-            int amount = Integer.parseInt(String.valueOf(stack.pop()));
+        while (stack.size() >= 2) {
+            String type = MiscUtils.getWordFromListInString(stack.pop(), xpmap.keySet());
+            int amount = Integer.parseInt(stack.pop());
             if (amount > maxAmount && xpmap.get(type) > 0) {
                 maxAmount = amount;
             }
@@ -96,7 +91,7 @@ public class MixinClientPlayNetHandler {
         for (String type : itemAmountMap.keySet()) {
             if (type.contains("Bark")) hasBark = true;
             if (type.contains("Log")) hasLog = true;
-            if (EXPUtils.cookingXPMap.keySet().contains(type)) isCooking = true;
+            if (EXPUtils.cookingXPMap.containsKey(type)) isCooking = true;
 
             if (!(hasBark && hasLog)) if (!isCooking)
                 totalXP += xpmap.get(type) * itemAmountMap.get(type);
@@ -106,13 +101,13 @@ public class MixinClientPlayNetHandler {
             }
         }
 
-        if (Minecraft.getInstance().player != null) {
-            ITextComponent msg = MiscUtils.getMessage("+" + totalXP + " XP (" + String.join(", ", MiscUtils.getAmountListFromAmountMap(itemAmountMap)) + ")", getColorFromAmount(maxAmount));
+        if (client.player != null) {
+            message.getSiblings().add(MiscUtils.getMessage(" +" + totalXP + " XP", getColorFromAmount(maxAmount)));
             if (isLumberBuff)
-                msg = msg.copyRaw().appendSibling(MiscUtils.getMessage(" +(x1.5 XP 🪓)", 'd'));
+                message.getSiblings().add(MiscUtils.getMessage(" +(x1.5 XP 🪓)", 'd'));
             if (isROLProc)
-                msg = msg.copyRaw().appendSibling(MiscUtils.getMessage(" (☘)", 'e'));
-            client.player.sendStatusMessage(msg, false);
+                message.getSiblings().add(MiscUtils.getMessage(" (☘)", 'e'));
+            client.player.sendStatusMessage(message, false);
         }
 
         return null;

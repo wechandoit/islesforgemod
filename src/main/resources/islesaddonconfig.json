@@ -1,12 +1,12 @@
 {
-  "enable-crate-icon-amount": true,
-  "enable-ring-icon-amount": true,
-  "enable-custom-message": true,
-  "enable-rare-fishing-title": true,
-  "enable-green-qte-notifier": false,
-  "enable-purple-qte-notifier": true,
-  "enable-gold-qte-notifier": true,
-  "enable-stack-chat": true,
-  "enable-fishing-notifier": true,
-  "enable-glowing-parkour-skulls": true
+  "crate-icon-amount": true,
+  "ring-icon-amount": true,
+  "custom-message": true,
+  "rare-fishing-title": true,
+  "green-qte-notifier": false,
+  "purple-qte-notifier": true,
+  "gold-qte-notifier": true,
+  "stack-chat": true,
+  "fishing-notifier": true,
+  "glowing-parkour-skulls": true
 }

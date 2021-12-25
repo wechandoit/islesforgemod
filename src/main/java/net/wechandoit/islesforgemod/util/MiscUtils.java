@@ -11,11 +11,11 @@ import net.minecraft.scoreboard.Score;
 import net.minecraft.scoreboard.ScoreObjective;
 import net.minecraft.scoreboard.ScorePlayerTeam;
 import net.minecraft.scoreboard.Scoreboard;
-import net.minecraft.util.text.Color;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.wechandoit.islesforgemod.Islesforgemod;
+import net.wechandoit.islesforgemod.config.IslesAddonConfig;
 
 import java.util.*;
 
@@ -25,11 +25,11 @@ public class MiscUtils {
     private static final int GUI_OVERLAY_WIDTH_THRESH = 16;
     private static FontRenderer fontRenderer = Islesforgemod.client.fontRenderer;
 
-    public static boolean isWordFromListInString(String message, List<String> checkList) {
+    public static boolean isWordFromListInString(String message, Collection<String> checkList) {
         return getWordFromListInString(message, checkList) != null;
     }
 
-    public static String getWordFromListInString(String message, List<String> checkList) {
+    public static String getWordFromListInString(String message, Collection<String> checkList) {
         for (String string : checkList) {
             if (message.toUpperCase().contains(string.toUpperCase()))
                 return string;
@@ -37,16 +37,16 @@ public class MiscUtils {
         return null;
     }
 
-    public static Stack getStackFromItemResourceString(String message) {
-        Stack stack = new Stack();
+    public static Stack<String> getStackFromItemResourceString(String message) {
+        Stack<String> stack = new Stack<>();
         for (String m : message.split(" ")) {
             m = m.replace(",", "").replace("🪓", "").replace("☘", "");
             if (stack.empty())
                 stack.push(m);
             else {
-                String peek = String.valueOf(stack.peek());
+                String peek = stack.peek();
                 if (peek.matches(".*\\d.*") || m.matches(".*\\d.*")) {
-                    String peekStack = String.valueOf(stack.peek());
+                    String peekStack = stack.peek();
                     if (m.matches(".*\\d.*") && peekStack.substring(peekStack.length() - 3).contains("and")) {
                         String n = String.valueOf(stack.pop());
                         n = n.replace(" and", "");
@@ -109,13 +109,12 @@ public class MiscUtils {
 
         if (string == null || string.trim().equals("")) return 0;
 
-        List<String> temp = Arrays.asList(string.replace("[", "").replace("]", "").replace("text", "").replace("}", "").replace("{", "").replace(":", "").replace("color", "").replace("italic", "").replace("false", "").replace(",", "").replace("'", "").split("\""));
-        List<String> amountTemp = new ArrayList<>();
-        for (String line : temp) {
-            if (!line.replaceAll("\\s+", "").equals("")) {
-                amountTemp.add(line.replaceAll("\\s+", ""));
-            }
-        }
+        String[] temp = string.replaceAll("[\\[\\]{}:,']", "")
+                .replace("text", "")
+                .replace("color", "")
+                .replace("italic", "")
+                .replace("false", "")
+                .split("\"");
 
         for (String line : temp) {
             if (line.matches(".*\\d.*") && line.substring(0, 1).matches(".*\\d.*")) {
@@ -163,21 +162,18 @@ public class MiscUtils {
 
     }
 
-    private static boolean enableCrateIcon = true;
-    private static boolean enableRingIcon = true;
-
     public static void renderAmountOnCrates(ItemStack stack, int x, int y, int z) {
         CompoundNBT nbt = stack.getTag();
         if (nbt != null && nbt.getCompound("display") != null) {
             CompoundNBT nbtDisplay = nbt.getCompound("display");
             if(nbtDisplay != null && nbtDisplay.get("Lore") != null) {
                 String rawLore = nbtDisplay.get("Lore").toString();
-                if (enableCrateIcon) {
+                if (IslesAddonConfig.CONFIG.get("crate-icon-amount", Boolean.class)) {
                     if (isCrate(stack)) {
                         int amount = getAmountInCrate(rawLore);
                         renderAmountText(new MatrixStack(), stack, x, y, z, amount);
                     }
-                } else if (enableRingIcon) {
+                } else if (IslesAddonConfig.CONFIG.get("ring-icon-amount", Boolean.class)) {
                     if (isRing(stack)) {
                         int amount = 0;
                         renderAmountText(new MatrixStack(), stack, x, y, z, amount);

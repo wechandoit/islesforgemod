@@ -33,7 +33,7 @@ public abstract class MixinNewChatGui {
     @Inject(method = "printChatMessageWithOptionalDeletion", at = @At("TAIL"),
             cancellable = true)
     private void printChatMessageWithOptionalDeletion(ITextComponent chatComponent, int chatLineId, CallbackInfo ci) {
-        if (IslesAddonConfig.CONFIG.get("enable-stack-chat", Boolean.class)) {
+        if (IslesAddonConfig.CONFIG.get("stack-chat", Boolean.class)) {
             if (!sentStackMessage) {
                 ITextComponent stackText = null;
                 if (stackMessage != null && chatComponent.getString().equals(stackMessage.getString())) {

@@ -36,16 +36,16 @@ public class IslesAddonConfig {
         return CONFIG.entrySet().stream()
                 .map(IslesAddonConfig::toOption)
                 .filter(Objects::nonNull)
-                .toArray(x$0 -> new AbstractOption[x$0]);
+                .toArray(AbstractOption[]::new);
     }
 
     public static boolean doesNotExist() {
-        return Files.notExists(getConfigDir().resolve(FILE_NAME), new java.nio.file.LinkOption[0]);
+        return Files.notExists(getConfigDir().resolve(FILE_NAME));
     }
 
     public static void load() {
         Path path = getConfigDir().resolve(FILE_NAME);
-        if (Files.exists(path, new java.nio.file.LinkOption[0])) {
+        if (Files.exists(path)) {
             CONFIG.load(path);
         } else {
             save();
@@ -71,23 +71,23 @@ public class IslesAddonConfig {
             Number min = CONFIG.get(key + ".min", Number.class);
             Number max = CONFIG.get(key + ".max", Number.class);
             Number step = CONFIG.get(key + ".step", Number.class);
-            option = new SliderPercentageOption(translationKey, min.doubleValue(), max.doubleValue(), step.floatValue(), __ -> Double.valueOf(((Number)CONFIG.get(key, Number.class)).doubleValue()), (__, v) -> CONFIG.put(key, v), (__, ___) -> new TranslationTextComponent(translationKey));
+            option = new SliderPercentageOption(translationKey, min.doubleValue(), max.doubleValue(), step.floatValue(),
+                    __ -> CONFIG.get(key, Number.class).doubleValue(), (__, v) -> CONFIG.put(key, v), (__, ___) -> new TranslationTextComponent(key));
         } else if (value instanceof Boolean) {
-            option = new BooleanOption(translationKey, __ -> ((Boolean)CONFIG.get(key, Boolean.class)).booleanValue(), (__, v) -> CONFIG.put(key, v));
+            option = new BooleanOption(translationKey, __ -> CONFIG.get(key, Boolean.class), (__, v) -> CONFIG.put(key, v));
         } else if (value instanceof Collection) {
-            List<String> options = (List<String>)((Collection)value).stream().map(String::valueOf).collect(Collectors.toList());
+            List<String> options = ((Collection<Object>)value).stream().map(String::valueOf).collect(Collectors.toList());
             Preconditions.checkState(!options.isEmpty(), "no options: " + key);
             option = new IteratableOption(translationKey, (__, a) -> {
-                int amount = a.intValue();
-                for (int i = 0; i < amount; i++)
+                for (int i = 0; i < a; i++)
                     options.add(options.remove(0));
-            }, (__, o) -> new TranslationTextComponent("option.isles-addons." + options.get(0)));
+            }, (__, o) -> new TranslationTextComponent(translationKey + options.get(0)));
         } else {
             throw new IllegalStateException();
         }
-        String tooltipKey = "option.isles-addons." + key + ".tooltip";
+        String tooltipKey = translationKey + ".tooltip";
         if (I18n.hasKey(tooltipKey))
-            option.setOptionValues((Minecraft.getInstance()).fontRenderer.trimStringToWidth(new TranslationTextComponent(tooltipKey), 200));
+            option.setOptionValues(Minecraft.getInstance().fontRenderer.trimStringToWidth(new TranslationTextComponent(tooltipKey), 200));
         return option;
     }
 }
