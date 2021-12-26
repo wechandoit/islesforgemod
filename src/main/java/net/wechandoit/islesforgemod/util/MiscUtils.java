@@ -131,7 +131,7 @@ public class MiscUtils {
         return (stack != null && stack.getDisplayName() != null && stack.getDisplayName().getString().contains("Ring of"));
     }
 
-    public static void renderAmountText(MatrixStack matrices, ItemStack stack, int x, int y, int z, int amount) {
+    public static void renderAmountText(MatrixStack matrices, ItemStack stack, int x, int y, float z, int amount) {
 
         ITextComponent message = ITextComponent.getTextComponentOrEmpty(String.valueOf(amount));
 
@@ -161,7 +161,7 @@ public class MiscUtils {
 
     }
 
-    public static void renderAmountOnCrates(ItemStack stack, int x, int y, int z) {
+    public static void renderAmountOnCrates(ItemStack stack, int x, int y, float z) {
         CompoundNBT nbt = stack.getTag();
         if (nbt != null && nbt.getCompound("display") != null) {
             CompoundNBT nbtDisplay = nbt.getCompound("display");

@@ -6,9 +6,8 @@
   "refmap": "islesforgemod.refmap.json",
   "client": [
     "MixinClientPlayNetHandler",
-    "MixinContainerScreen",
     "MixinEntity",
-    "MixinIngameGui",
+    "MixinItemRenderer",
     "MixinNewChatGui",
     "MixinParticleManager"
   ],
