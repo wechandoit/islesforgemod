@@ -128,18 +128,6 @@ public class MiscUtils {
     }
 
     public static boolean isRing(ItemStack stack) {
-
-        try {
-            boolean isNotNull = stack != null;
-            boolean hasName = stack.getDisplayName() != null;
-            boolean isRing = stack.getDisplayName().getString().contains("Ring of");
-
-            System.out.println(isNotNull + " " + hasName + " " + isRing);
-            System.out.println(stack.getDisplayName());
-        } catch (NullPointerException e) {
-            System.out.println(stack.getDisplayName() + " is not a Ring!");
-        }
-
         return (stack != null && stack.getDisplayName() != null && stack.getDisplayName().getString().contains("Ring of"));
     }
 
@@ -175,23 +163,43 @@ public class MiscUtils {
 
     public static void renderAmountOnCrates(ItemStack stack, int x, int y, float z) {
         CompoundNBT nbt = stack.getTag();
-        if (nbt != null && nbt.getCompound("display") != null) {
-            CompoundNBT nbtDisplay = nbt.getCompound("display");
-            if(nbtDisplay != null && nbtDisplay.get("Lore") != null) {
-                String rawLore = nbtDisplay.get("Lore").toString();
-                if (IslesAddonConfig.CONFIG.get("crate-icon-amount", Boolean.class)) {
-                    if (isCrate(stack)) {
-                        int amount = getAmountInCrate(rawLore);
-                        renderAmountText(new MatrixStack(), x, y, z, amount);
-                    }
-                } else if (IslesAddonConfig.CONFIG.get("ring-icon-amount", Boolean.class)) {
-                    if (isRing(stack)) {
-                        int amount = 0;
-                        renderAmountText(new MatrixStack(), x, y, z, amount);
+        if (nbt != null) {
+            if (nbt.getCompound("display") != null) {
+                CompoundNBT nbtDisplay = nbt.getCompound("display");
+                if (nbtDisplay != null && nbtDisplay.get("Lore") != null) {
+                    String rawLore = nbtDisplay.get("Lore").toString();
+                    if (IslesAddonConfig.CONFIG.get("crate-icon-amount", Boolean.class)) {
+                        if (isCrate(stack)) {
+                            int amount = getAmountInCrate(rawLore);
+                            renderAmountText(new MatrixStack(), x, y, z, amount);
+                        }
                     }
                 }
             }
+            if (IslesAddonConfig.CONFIG.get("ring-icon-amount", Boolean.class)) {
+                if (isRing(stack)) {
+                    int amount = getRingAmount(stack);
+                    if (amount > 0)
+                        renderAmountText(new MatrixStack(), x, y, z, amount);
+                }
+            }
         }
+
+    }
+
+    public static int getRingAmount(ItemStack stack) {
+        String name = stack.getDisplayName().getString();
+        int amount;
+
+        try {
+            String unformattedNum = name.substring(name.indexOf("(")+1, name.indexOf(")"));
+            System.out.println(unformattedNum + " " + name);
+            amount = Integer.parseInt(unformattedNum.replace(",", ""));
+        } catch (NumberFormatException | IndexOutOfBoundsException e) {
+            amount = 0;
+        }
+
+        return amount;
     }
 
     public static ITextComponent getMessage(String message, char color) {
