@@ -128,10 +128,22 @@ public class MiscUtils {
     }
 
     public static boolean isRing(ItemStack stack) {
+
+        try {
+            boolean isNotNull = stack != null;
+            boolean hasName = stack.getDisplayName() != null;
+            boolean isRing = stack.getDisplayName().getString().contains("Ring of");
+
+            System.out.println(isNotNull + " " + hasName + " " + isRing);
+            System.out.println(stack.getDisplayName());
+        } catch (NullPointerException e) {
+            System.out.println(stack.getDisplayName() + " is not a Ring!");
+        }
+
         return (stack != null && stack.getDisplayName() != null && stack.getDisplayName().getString().contains("Ring of"));
     }
 
-    public static void renderAmountText(MatrixStack matrices, ItemStack stack, int x, int y, float z, int amount) {
+    public static void renderAmountText(MatrixStack matrices, int x, int y, float z, int amount) {
 
         ITextComponent message = ITextComponent.getTextComponentOrEmpty(String.valueOf(amount));
 
@@ -146,7 +158,7 @@ public class MiscUtils {
             scaleRatio = GUI_OVERLAY_WIDTH_THRESH / messageWidth;
 
         matrices.scale(scaleRatio, scaleRatio, 1f);
-        matrices.translate(0, 0, z + 500);
+        matrices.translate(0, 0, z + 200);
         if (amount < 100)
             AbstractGui.drawCenteredString(matrices, fontRenderer, message,
                     x + 8, y + 8,
@@ -170,12 +182,12 @@ public class MiscUtils {
                 if (IslesAddonConfig.CONFIG.get("crate-icon-amount", Boolean.class)) {
                     if (isCrate(stack)) {
                         int amount = getAmountInCrate(rawLore);
-                        renderAmountText(new MatrixStack(), stack, x, y, z, amount);
+                        renderAmountText(new MatrixStack(), x, y, z, amount);
                     }
                 } else if (IslesAddonConfig.CONFIG.get("ring-icon-amount", Boolean.class)) {
                     if (isRing(stack)) {
                         int amount = 0;
-                        renderAmountText(new MatrixStack(), stack, x, y, z, amount);
+                        renderAmountText(new MatrixStack(), x, y, z, amount);
                     }
                 }
             }

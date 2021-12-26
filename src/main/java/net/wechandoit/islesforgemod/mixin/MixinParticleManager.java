@@ -45,6 +45,8 @@ public abstract class MixinParticleManager {
             if (nearbyEntityTypes.containsAll(qtetypes)) {
                 for (Entity e : nearbyClickBoxes) {
                     if (!isBlockTypeNearby(e, 1)) {
+                        if (e.getType() == EntityType.ITEM)
+                            e.setGlowing(true);
                         client.player.sendStatusMessage(MiscUtils.getMessage("There is a QTE nearby...", getColorFromType(particleData.getType())), false);
                     }
                 }

@@ -35,7 +35,7 @@ public class EXPUtils {
         put("Raw Sea Turtle", 250);
         put("Raw Jellyfish", 250);
         // put("Raw Anglerfish", );
-        put("Raw Goliath Grouper", 298);
+        put("Raw Goliath Grouper", 288);
         // put("Raw Shark", );
     }};
 
@@ -52,7 +52,7 @@ public class EXPUtils {
         put("Grilled Trout", 48);
         put("Cod Fish Sandwich", 50);
         put("Calamari", 62);
-        put("Smoked Salmon", 66);
+        put("Smoked Salmon", 78);
         put("Grilled Catfish", 71);
         put("Fried Perch", 72); // 1.3
         put("Picklefish Stew", 80);

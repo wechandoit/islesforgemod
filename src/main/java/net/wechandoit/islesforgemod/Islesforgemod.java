@@ -100,14 +100,14 @@ public class Islesforgemod {
     }
 
     private boolean isFishingArmorstandNearby() {
-        return getFishingHoloEntity(fishingEntity) != null && fishingHoloEntity.getEntityId() != getFishingHoloEntity(fishingEntity).getEntityId();
+        return MiscUtils.onIsles() && getFishingHoloEntity(fishingEntity) != null && fishingHoloEntity.getEntityId() != getFishingHoloEntity(fishingEntity).getEntityId();
     }
 
     @SubscribeEvent(priority = EventPriority.HIGH)
     public void onEntityInteract(PlayerInteractEvent.EntityInteract event) {
         if (IslesAddonConfig.CONFIG.get("fishing-notifier", Boolean.class)) {
             Entity entity = event.getTarget();
-            if (!isFishing && entity.getType() == EntityType.MAGMA_CUBE && !justStartedFishing && client.player.inventory.getFirstEmptyStack() > -1 && ((MagmaCubeEntity) entity).getSlimeSize() > 1 && Islesforgemod.getFishingHoloEntity(entity) != null) {
+            if (MiscUtils.onIsles() && !isFishing && entity.getType() == EntityType.MAGMA_CUBE && !justStartedFishing && client.player.inventory.getFirstEmptyStack() > -1 && ((MagmaCubeEntity) entity).getSlimeSize() > 1 && getFishingHoloEntity(entity) != null) {
                 isFishing = true;
                 justStartedFishing = true;
                 fishingEntity = entity;
@@ -120,32 +120,34 @@ public class Islesforgemod {
     public void onClientTick(TickEvent.ClientTickEvent event) {
         if (event.phase == TickEvent.Phase.START) {
             clientTick++;
-            if (IslesAddonConfig.CONFIG.get("fishing-notifier", Boolean.class)) {
-                if (isFishing && (!isFishingEntityAlive() || isFishingArmorstandNearby() || client.player.isSneaking() || client.player.inventory.getFirstEmptyStack() == -1) && !justStartedFishing) {
-                    isFishing = false;
-                    fishingEntity = null;
-                    fishingHoloEntity = null;
-                    client.player.playSound(SoundEvents.ENTITY_ELDER_GUARDIAN_CURSE, 1F, 0.8F);
-                    client.player.sendStatusMessage(MiscUtils.getMessage("You have stopped fishing...", 'e'), false);
-                } else if (justStartedFishing) {
-                    justStartedFishing = false;
+            if (MiscUtils.onIsles()) {
+                if (IslesAddonConfig.CONFIG.get("fishing-notifier", Boolean.class)) {
+                    if (isFishing && (!isFishingEntityAlive() || isFishingArmorstandNearby() || client.player.isSneaking() || client.player.inventory.getFirstEmptyStack() == -1) && !justStartedFishing) {
+                        isFishing = false;
+                        fishingEntity = null;
+                        fishingHoloEntity = null;
+                        client.player.playSound(SoundEvents.ENTITY_ELDER_GUARDIAN_CURSE, 1F, 0.8F);
+                        client.player.sendStatusMessage(MiscUtils.getMessage("You have stopped fishing...", 'e'), false);
+                    } else if (justStartedFishing) {
+                        justStartedFishing = false;
+                    }
                 }
-            }
-            if (IslesAddonConfig.CONFIG.get("glowing-parkour-skulls", Boolean.class)) {
-                // get closest armorstand to particleLoc
-                try {
-                    List<Entity> nearbyArmorStands = client.world.getEntitiesInAABBexcluding(client.player, client.player.getBoundingBox().expand(client.gameRenderer.getFarPlaneDistance(), client.gameRenderer.getFarPlaneDistance(), client.gameRenderer.getFarPlaneDistance()), (entity -> entity.getType() == EntityType.ARMOR_STAND));
-                    for (Entity en : nearbyArmorStands) {
-                        if (!en.isGlowing()) {
-                            for(ItemStack stack : en.getArmorInventoryList()) {
-                                if (stack != null && !stack.toString().toUpperCase().contains("AIR") && stack.getTag() != null && stack.getTag().get("SkullOwner") != null && stack.getTag().get("SkullOwner").toString().contains(skullSignature)) {
-                                    en.setGlowing(true);
+                if (IslesAddonConfig.CONFIG.get("glowing-parkour-skulls", Boolean.class)) {
+                    // get closest armorstand to particleLoc
+                    try {
+                        List<Entity> nearbyArmorStands = client.world.getEntitiesInAABBexcluding(client.player, client.player.getBoundingBox().expand(client.gameRenderer.getFarPlaneDistance(), client.gameRenderer.getFarPlaneDistance(), client.gameRenderer.getFarPlaneDistance()), (entity -> entity.getType() == EntityType.ARMOR_STAND));
+                        for (Entity en : nearbyArmorStands) {
+                            if (!en.isGlowing()) {
+                                for (ItemStack stack : en.getArmorInventoryList()) {
+                                    if (stack != null && !stack.toString().toUpperCase().contains("AIR") && stack.getTag() != null && stack.getTag().get("SkullOwner") != null && stack.getTag().get("SkullOwner").toString().contains(skullSignature)) {
+                                        en.setGlowing(true);
+                                    }
                                 }
                             }
                         }
+                    } catch (NullPointerException exception) {
+                        // ignore exception
                     }
-                } catch (NullPointerException exception) {
-
                 }
             }
             if (clientTick == 20) {
