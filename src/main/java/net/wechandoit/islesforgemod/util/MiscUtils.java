@@ -193,7 +193,6 @@ public class MiscUtils {
 
         try {
             String unformattedNum = name.substring(name.indexOf("(")+1, name.indexOf(")"));
-            System.out.println(unformattedNum + " " + name);
             amount = Integer.parseInt(unformattedNum.replace(",", ""));
         } catch (NumberFormatException | IndexOutOfBoundsException e) {
             amount = 0;
