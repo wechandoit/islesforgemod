@@ -149,7 +149,7 @@ public class EXPUtils {
         put("Demon Bark", 350);
         put("Rough Amber", 0);
         put("Log", 15);
-        put("Arrow Shaft", 15);
+        put("Arrow Shaft", 15); // from shafter (offhand)
         put("Acorn", 0);
         put("Dark Rune", 0); // dreadknot trees drop dark runes too
     }};

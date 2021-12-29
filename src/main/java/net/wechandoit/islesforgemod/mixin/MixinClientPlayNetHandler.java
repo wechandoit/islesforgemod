@@ -20,7 +20,8 @@ import java.util.Stack;
 @Mixin(ClientPlayNetHandler.class)
 public class MixinClientPlayNetHandler {
 
-    @Shadow private Minecraft client;
+    @Shadow
+    private Minecraft client;
 
     @Inject(method = "handleChat", at = @At("HEAD"), cancellable = true)
     private void handleChat(SChatPacket packetIn, CallbackInfo ci) {
@@ -35,7 +36,7 @@ public class MixinClientPlayNetHandler {
                     } else if (!message.getString().contains("Hide") && MiscUtils.isWordFromListInString(message.getString(), EXPUtils.cookingXPMap.keySet())) {
                         ci.cancel();
                         sendMessageFromList(message, EXPUtils.cookingXPMap);
-                    } else if ((message.getString().contains("Log") || message.getString().contains("Bark")) && MiscUtils.isWordFromListInString(message.getString(), EXPUtils.foragingXPMap.keySet())) {
+                    } else if ((message.getString().contains("Log") || message.getString().contains("Bark") || message.getString().contains("Acorn") || message.getString().contains("Arrow Shaft")) && MiscUtils.isWordFromListInString(message.getString(), EXPUtils.foragingXPMap.keySet())) {
                         ci.cancel();
                         if (message.getString().contains("🪓"))
                             sendMessageFromList(message, EXPUtils.foragingXPMap, true);
@@ -75,25 +76,30 @@ public class MixinClientPlayNetHandler {
         int maxAmount = 0;
         while (stack.size() >= 2) {
             String type = MiscUtils.getWordFromListInString(stack.pop(), xpmap.keySet());
-            int amount = Integer.parseInt(stack.pop());
-            if (amount > maxAmount && xpmap.get(type) > 0) {
-                maxAmount = amount;
-            }
-            if (itemAmountMap.containsKey(type)) {
-                itemAmountMap.put(type, itemAmountMap.get(type) + amount);
-            } else {
-                itemAmountMap.put(type, amount);
+            try {
+                int amount = Integer.parseInt(stack.pop());
+                if (amount > maxAmount && xpmap.get(type) > 0) {
+                    maxAmount = amount;
+                }
+                if (itemAmountMap.containsKey(type)) {
+                    itemAmountMap.put(type, itemAmountMap.get(type) + amount);
+                } else {
+                    itemAmountMap.put(type, amount);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }
 
         int totalXP = 0;
-        boolean hasBark = false, hasLog = false, isCooking = false;
+        boolean hasBark = false, hasLog = false, isCooking = false, isShaft = false;
         for (String type : itemAmountMap.keySet()) {
             if (type.contains("Bark")) hasBark = true;
             if (type.contains("Log")) hasLog = true;
+            if (type.contains("Arrow Shaft")) isShaft = true;
             if (EXPUtils.cookingXPMap.containsKey(type)) isCooking = true;
 
-            if (!(hasBark && hasLog)) if (!isCooking)
+            if (!(hasBark && hasLog) && !isCooking && !isShaft)
                 totalXP += xpmap.get(type) * itemAmountMap.get(type);
             else {
                 totalXP += xpmap.get(type) * multiplier;
@@ -102,19 +108,19 @@ public class MixinClientPlayNetHandler {
         }
 
         if (client.player != null) {
-            message.getSiblings().add(MiscUtils.getMessage(" +" + totalXP + " XP", getColorFromAmount(maxAmount)));
+            ITextComponent msg = MiscUtils.getMessage("+" + totalXP + " XP (" + String.join(", ", MiscUtils.getAmountListFromAmountMap(itemAmountMap)) + ")", getColorFromAmount(maxAmount, isShaft));
             if (isLumberBuff)
-                message.getSiblings().add(MiscUtils.getMessage(" +(x1.5 XP 🪓)", 'd'));
+                msg.getSiblings().add(MiscUtils.getMessage(" +(x1.5 XP 🪓)", 'd'));
             if (isROLProc)
-                message.getSiblings().add(MiscUtils.getMessage(" (☘)", 'e'));
-            client.player.sendStatusMessage(message, false);
+                msg.getSiblings().add(MiscUtils.getMessage(" (☘)", 'e'));
+            client.player.sendStatusMessage(msg, false);
         }
 
         return message;
     }
 
-    private char getColorFromAmount(int amount) {
-        if (amount == 1) {
+    private char getColorFromAmount(int amount, boolean isShaft) {
+        if (isShaft || amount == 1) {
             return 'a';
         } else if (amount > 1 && amount <= 20) {
             return '5';

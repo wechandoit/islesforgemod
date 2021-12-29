@@ -30,7 +30,7 @@ public class MiscUtils {
 
     public static String getWordFromListInString(String message, Collection<String> checkList) {
         for (String string : checkList) {
-            if (message.toUpperCase().contains(string.toUpperCase()))
+            if (message.contains(string))
                 return string;
         }
         return null;
