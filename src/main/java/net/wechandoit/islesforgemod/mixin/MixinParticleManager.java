@@ -34,7 +34,7 @@ public abstract class MixinParticleManager {
         if ((particleData.getType() == ParticleTypes.HAPPY_VILLAGER && IslesAddonConfig.CONFIG.get("green-qte-notifier", Boolean.class))
                 || (particleData.getType() == ParticleTypes.DRAGON_BREATH && IslesAddonConfig.CONFIG.get("purple-qte-notifier", Boolean.class))
                 || (legendaryQTEParticleTypes.contains(particleData.getType()) && IslesAddonConfig.CONFIG.get("gold-qte-notifier", Boolean.class))) {
-            AxisAlignedBB particleBox = new AxisAlignedBB(x - 0.5, y - 0.5, z - 0.5, x + 0.5, y + 0.5, z + 0.5);
+            AxisAlignedBB particleBox = new AxisAlignedBB(x - 0.35, y - 0.35, z - 0.35, x + 0.35, y + 0.35, z + 0.35);
             // get closest entity of type ItemEntity to particleLoc
             List<Entity> nearbyClickBoxes = client.world.getEntitiesInAABBexcluding(client.player, particleBox, (entity -> qtetypes.contains(entity.getType())));
             List<EntityType<?>> nearbyEntityTypes = new ArrayList<>();
@@ -45,8 +45,6 @@ public abstract class MixinParticleManager {
             if (nearbyEntityTypes.containsAll(qtetypes)) {
                 for (Entity e : nearbyClickBoxes) {
                     if (!isBlockTypeNearby(e, 1)) {
-                        if (e.getType() == EntityType.ITEM)
-                            e.setGlowing(true);
                         client.player.sendStatusMessage(MiscUtils.getMessage("There is a QTE nearby...", getColorFromType(particleData.getType())), false);
                     }
                 }
