@@ -249,6 +249,7 @@ public class EXPUtils {
         // put("Spectral Bar", );
         // put("Netherite Bar", );
         // put("Blightstone Bar", );
+        put("Iron Dust", 0);
     }};
 
     public static final HashMap<String, Integer> artisanXPMap = new LinkedHashMap<String, Integer>() {{
