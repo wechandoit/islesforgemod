@@ -15,6 +15,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Stack;
 
 @Mixin(ClientPlayNetHandler.class)
@@ -75,10 +76,12 @@ public class MixinClientPlayNetHandler {
         HashMap<String, Integer> itemAmountMap = new HashMap<>();
         int maxAmount = 0;
         while (stack.size() >= 2) {
-            String type = MiscUtils.getWordFromListInString(stack.pop(), xpmap.keySet());
+            String element = stack.pop();
+            String type = Optional.ofNullable(MiscUtils.getWordFromListInString(element, xpmap.keySet())).orElse(element);
+            
             try {
                 int amount = Integer.parseInt(stack.pop());
-                if (amount > maxAmount && xpmap.get(type) > 0) {
+                if (amount > maxAmount && xpmap.getOrDefault(type, 0) > 0) {
                     maxAmount = amount;
                 }
                 if (itemAmountMap.containsKey(type)) {
@@ -100,9 +103,9 @@ public class MixinClientPlayNetHandler {
             if (EXPUtils.cookingXPMap.containsKey(type)) isCooking = true;
 
             if (!(hasBark && hasLog) && !isCooking && !isShaft)
-                totalXP += xpmap.get(type) * itemAmountMap.get(type);
+                totalXP += xpmap.getOrDefault(type, 0) * itemAmountMap.get(type);
             else {
-                totalXP += xpmap.get(type) * multiplier;
+                totalXP += xpmap.getOrDefault(type, 0) * multiplier;
                 maxAmount = 1;
             }
         }
